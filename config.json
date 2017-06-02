@@ -1,0 +1,5 @@
+{
+  "secret": "",
+  "port": 3000,
+  "mongoUri": ""
+}
