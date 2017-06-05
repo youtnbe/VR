@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db": "C:/MongoDB/bin/mongod --dbpath db",
     "start": "nodemon app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

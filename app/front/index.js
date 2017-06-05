@@ -1,7 +1,18 @@
 const API_ENDPOINT = 'http://localhost:3000/service/';
 
 $(function () {
+    console.log('start!');
     $.ajax({
+        xhr: function () {
+            var xhr = new window.XMLHttpRequest();
+            xhr.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    console.log(percentComplete);
+                }
+            }, false);
+            return xhr;
+        },
         url: API_ENDPOINT + 'recognition',
         success: function (data) {
             dataProcessing(data);
@@ -12,8 +23,29 @@ $(function () {
         console.log(data.data);
 
 
-        setGraph(arrayToGraph(data.data.wav), '#gr1');
-        setGraph(arrayToGraph(data.data.fft), '#gr2');
+        setGraph(arrayToGraph(data.data.wav1), '#gr1');
+        setGraph(arrayToGraph(data.data.wav2), '#gr3');
+        setGraph(arrayToGraph(data.data.wav3), '#gr5');
+
+        let m1 = [];
+        for (let i = 0; i < data.data.m1.length; i++) {
+            m1[i] = data.data.m1[i][8];
+        }
+        setGraph(arrayToGraph(m1), '#gr2');
+
+        let m2 = [];
+        for (let i = 0; i < data.data.m2.length; i++) {
+            m2[i] = data.data.m2[i][8];
+        }
+        setGraph(arrayToGraph(m2), '#gr4');
+
+        let m3 = [];
+        for (let i = 0; i < data.data.m3.length; i++) {
+            m3[i] = data.data.m3[i][8];
+        }
+        setGraph(arrayToGraph(m3), '#gr6');
+
+       // setGraph(arrayToGraph(data.data.fft[0]), '#gr2');
 
     }
 

@@ -1,5 +1,7 @@
 var fftcopm = require('./fft').fft;
 var complex = require('./complex');
+var mfccc = require('./mfcc').construct(512, 10, 300, 8000, 256);
+var powerSpectrum = require('./mfcc').powerSpectrum;
 
 module.exports = {
     normalizeWaveform: normalizeWaveform,
@@ -8,8 +10,26 @@ module.exports = {
     getFrames: getFrames,
     isVoice: isVoice,
     hammingWindow: hammingWindow,
-    fft: fft
+    fft: fft,
+    mfcc: mfcc
 };
+
+function mfcc(frames) {
+
+    let mel = [];
+    let fourier = [];
+
+    for (let i = 0; i < frames.length; i++) {
+
+        fourier[i] = fft(waveformForFFT(frames[i]));
+
+        fourier[i] = hammingWindow(fourier[i]);
+
+        mel[i] = mfccc(powerSpectrum(fourier[i]));
+
+    }
+    return mel;
+}
 
 function fft(waveform) {
     var fourierTransform = fftcopm(waveform);
@@ -38,7 +58,7 @@ function waveformForFFT(waveform) {
 
     while (norm_length < waveform.length)
         norm_length *= 2;
-    while (new_waveform.length != 16384)
+    while (new_waveform.length != norm_length)
         new_waveform.push(0);
 
     return new_waveform;
