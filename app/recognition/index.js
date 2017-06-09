@@ -1,15 +1,41 @@
 var app = (require('express').Router)();
 var fs = require('fs');
 
+var bodyParser = require("body-parser");
+var cors = require('cors');
+
+var multer = require('multer');
+var upload = multer({dest: 'uploads/'});
+
 var AudioContext = require('web-audio-api').AudioContext;
 var context = new AudioContext;
-var recognition = require('./lib/vr').construct(512);
+var recognition = require('./lib/vr').construct(256);
 
-app.get('/service/recognition', function (request, response) {
+app.use(bodyParser.urlencoded({limit: '10mb', extended: false, parameterLimit: 999999}));
+app.use(bodyParser.json());
 
-    let path = __dirname + '/files/1.wav';
-    let path2 = __dirname + '/files/1_1.wav';
-    let path3 = __dirname + '/files/2.wav';
+app.post('/service/wordAdd', function (request, response) {
+    if (!request.body) {
+        return response.status(400).json({
+            success: false,
+            message: 'Тело запроса пусто!'
+        });
+    }
+    var waveform = request.body['waveform[]']
+
+    response.status(200).json({
+        success: true,
+        data: {
+            mfcc: recognition.mfcc(waveform)
+        }
+    });
+});
+
+app.get('/service/recognition2', function (request, response) {
+
+    let path = __dirname + '/files/2.wav';
+    let path2 = __dirname + '/files/2_1.wav';
+    let path3 = __dirname + '/files/1.wav';
 
     fs.readFile(path, function (err, data) {
 
