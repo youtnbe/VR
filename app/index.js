@@ -8,6 +8,10 @@ var cors = require('cors');
 var http = require('http');
 var wav = require('wav');
 
+var config = require('./config');
+
+require('./dbinit');
+
 app.use(express.static(__dirname + '/front'));
 
 

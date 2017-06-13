@@ -1,6 +1,6 @@
 var fftcopm = require('./fft').fft;
 var complex = require('./complex');
-var mfccc = require('./mfcc').construct(256, 10, 300, 8000, 256);
+var mfccc = require('./mfcc').construct(256, 10, 300, 8000, 16000);
 var powerSpectrum = require('./mfcc').powerSpectrum;
 
 module.exports = {

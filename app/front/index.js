@@ -28,6 +28,22 @@ $(function () {
 
     });
 
+    $('#rec').click(function () {
+        var data = {};
+        var path = window.URL.createObjectURL(document.getElementById('file_r').files[0]);
+        getWaveformFromFile(path).then(function (waveform) {
+            data['waveform'] = waveform;
+            console.log(data);
+            $.post(API_ENDPOINT + 'recognize', data, function (data) {
+                console.log(data);
+            });
+        });
+    });
+
+    $.get(API_ENDPOINT + 'recognition2', function (data) {
+        console.log(data);
+    });
+
 
     function dataProcessing(data) {
         console.log(data.data);
@@ -110,7 +126,7 @@ function waveformCopy(waveform) {
     var new_waveform = [];
 
     for (var i = 0; i < waveform.length; i++)
-        new_waveform[i] = waveform[i];
+        new_waveform.push(waveform[i]);
 
     return new_waveform;
 }
@@ -123,6 +139,8 @@ function getWaveformFromFile(url) {
     xhr.onload = function (e) {
         context.decodeAudioData(this.response,
             function (decodedArrayBuffer) {
+                console.log(1111111111111111111111111);
+                console.log(decodedArrayBuffer.getChannelData(0).length);
                 deferred.resolve(waveformCopy(decodedArrayBuffer.getChannelData(0)));
             }, function (e) {
                 console.log('Error decoding file', e);

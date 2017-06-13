@@ -1,3 +1,5 @@
+
+
 var vrUtil = require('./vrutil');
 
 
@@ -10,22 +12,60 @@ function construct(frameWidth) {
 
     return {
         mfcc: function (waveform) {
-            var normalizedWaveform = vrUtil.normalizeWaveform(waveform);
+            var normalizedWaveform = vrUtil.normalizeWaveform(trim(waveform));
             var frames = vrUtil.getFrames(normalizedWaveform, frameWidth);
             return vrUtil.mfcc(frames);
         },
-        recornize: function (wav, wav2, wav3) {
+        recornize: function (waveform, words) {
+
+            console.log('1:' + waveform.length);
+            waveform = trim(waveform);
+            console.log('2:' + waveform.length);
+            let currentMfcc = this.mfcc(waveform);
+
+            let minDistance = 100;
+            let answer = '';
+
+            let ds = [];
+
+            words.forEach((word) => {
+                let d = DTWDistance(currentMfcc, word.mfcc, distance);
+
+                ds.push({
+                    d: d,
+                    w: word
+                });
+
+                if (d < minDistance) {
+                    minDistance = d;
+                    answer = word.word;
+                }
+            });
+
+            return {
+                min: minDistance,
+                a: answer,
+                ds: ds
+            };
+
+
+
+        },
+        r: function(wav, wav2, wav3){
+
+            console.log('1:' + wav.length + ' ' +wav2.length + ' ' +wav3.length);
 
             var wav = trim(wav);
             var wav2 = trim(wav2);
             var wav3 = trim(wav3);
+            console.log('2: ' + wav.length + ' ' +wav2.length + ' ' +wav3.length);
 
-            let m1 = melcep(wav);
-            let m2 = melcep(wav2);
-            let m3 = melcep(wav3);
+            let m1 = this.mfcc(wav);
+            let m2 = this.mfcc(wav2);
+            let m3 = this.mfcc(wav3);
 
-            let d12 = DTWDistance(m1, m2, distance);
-            let d23 = DTWDistance(m1, m3, distance);
+            let d12 = DTWDistance(m2, m1, distance);
+            let d23 = DTWDistance(m2, m3, distance);
 
 
             return {
@@ -36,16 +76,9 @@ function construct(frameWidth) {
                 m2: m2,
                 m3: m3,
                 d12: d12,
-                d23: d23,
-                qqq: DTWDistance([0, 0, 1, 2, 4, 9, 2, 0, 0, 0], [0, 2, 9, 1, 0], function (a, b) {
-                    return Math.abs(a - b);
-                }),
-                qqq1: DTWDistance([9, 6, 7, 0, 0, 1, 3, 4, 9, 8], [0, 2, 9, 1, 0], function (a, b) {
-                    return Math.abs(a - b);
-                })
+                d23: d23
             };
-
-        },
+        }
 
     }
 
@@ -59,10 +92,6 @@ function construct(frameWidth) {
         while (waveform[n2] < e)
             n2--;
         return waveform.slice(n1, n2);
-    }
-
-    function mfcc(wav) {
-
     }
 }
 
@@ -126,12 +155,12 @@ function DTWDistance(a, b, distance) {
     }
     while (i != 0 || j != 0);
 
-
-    return {
+    return DTW[n - 1][m - 1];
+    /*return {
         val: DTW[n - 1][m - 1],
         dtw: DTW,
         w: w.reverse()
-    };
+    };*/
 }
 
 
