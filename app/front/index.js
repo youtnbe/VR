@@ -1,18 +1,10 @@
-var contextClass = (window.AudioContext ||
-window.webkitAudioContext ||
-window.mozAudioContext ||
-window.oAudioContext ||
-window.msAudioContext);
-if (contextClass) {
-    var context = new contextClass();
-} else {
-    alert('The WebAudio API are not supported in this browser.');
-}
+var context = new window.AudioContext();
 
 const API_ENDPOINT = 'http://localhost:3000/service/';
 
 $(function () {
-    console.log('start!');
+
+
 
     $('#add').click(function () {
         var data = {};
@@ -20,7 +12,7 @@ $(function () {
         var path = window.URL.createObjectURL(document.getElementById('file').files[0]);
         getWaveformFromFile(path).then(function (waveform) {
             data['waveform'] = waveform;
-            console.log(data);
+            setGraph(arrayToGraph(waveform), '#gr1');
             $.post(API_ENDPOINT + 'wordAdd', data, function (data) {
                 console.log(data);
             });
@@ -33,6 +25,8 @@ $(function () {
         var path = window.URL.createObjectURL(document.getElementById('file_r').files[0]);
         getWaveformFromFile(path).then(function (waveform) {
             data['waveform'] = waveform;
+            setGraph(arrayToGraph(waveform, 0.006), '#gr1');
+            setGraph(arrayToGraph(waveform), '#gr2');
             console.log(data);
             $.post(API_ENDPOINT + 'recognize', data, function (data) {
                 console.log(data);
@@ -40,86 +34,64 @@ $(function () {
         });
     });
 
-    $.get(API_ENDPOINT + 'recognition2', function (data) {
-        console.log(data);
+    $('#recognize').hide();
+    $('#dictionary').show();
+    $('#dict_tab').click(() => {
+        $('#dictionary').show();
+        $('#recognize').hide();
+    });
+    $('#recg_tab').click(() => {
+        $('#recognize').show();
+        $('#dictionary').hide();
     });
 
 
-    function dataProcessing(data) {
-        console.log(data.data);
-
-
-        setGraph(arrayToGraph(data.data.wav1), '#gr1');
-        setGraph(arrayToGraph(data.data.wav2), '#gr2');
-        setGraph(arrayToGraph(data.data.wav3), '#gr6');
-
-        let m1 = [];
-        for (let i = 0; i < data.data.m1.length; i++) {
-            m1[i] = data.data.m1[i][8];
-        }
-        setGraph(arrayToGraph(m1), '#gr3');
-
-        let m2 = [];
-        for (let i = 0; i < data.data.m2.length; i++) {
-            m2[i] = data.data.m2[i][8];
-        }
-        setGraph(arrayToGraph(m2), '#gr4');
-
-        let w12 = [];
-        for (let i = 0; i < data.data.d12.w.length; i++) {
-            w12[i] = data.data.d12.w[i];
-        }
-        setGraph(arrayToGraph(w12), '#gr5');
-
-
-        let m3 = [];
-        for (let i = 0; i < data.data.m3.length; i++) {
-            m3[i] = data.data.m3[i][8];
-        }
-        setGraph(arrayToGraph(m3), '#gr7');
-
-        let w23 = [];
-        for (let i = 0; i < data.data.d23.w.length; i++) {
-            w23[i] = data.data.d23.w[i];
-        }
-        setGraph(arrayToGraph(w23), '#gr8');
-
-        // setGraph(arrayToGraph(data.data.fft[0]), '#gr2');
-
-    }
-
-    function setGraph(array, graph, min, max, width) {
-        $.plot($(graph), [array], {
-            series: {
-                lines: {
-                    lineWidth: width ? width : 1
-                },
-                points: {
-                    show: false,
-                    radius: 3
-                },
-                shadowSize: 0
-            }, /*
-             yaxis: {
-             min: min ? min : -1,
-             max: max ? max : 1
-             },*/
-            colors: ["#FF7070", "#0022FF"],
-        });
-    }
-
-    function arrayToGraph(array) {
-        var new_array = [];
-        if (array[0][0]) {
-            for (var i = 0; i < array.length; i++)
-                new_array[i] = [i, array[i][0]];
-        } else {
-            for (var i = 0; i < array.length; i++)
-                new_array[i] = [i, array[i]];
-        }
-        return new_array;
-    }
 });
+
+function setGraph(array, graph, min, max, width) {
+    $.plot($(graph), [array], {
+        series: {
+            lines: {
+                lineWidth: width ? width : 1
+            },
+            points: {
+                show: false,
+                radius: 3
+            },
+            shadowSize: 0
+        },
+        yaxis: {
+            min: min ? min : -1,
+            max: max ? max : 1
+        },
+        colors: ["#FF7070", "#0022FF"],
+    });
+}
+
+
+function arrayToGraph(array, e) {
+    e ? array = trim(array, e) : '';
+    var new_array = [];
+    if (array[0][0]) {
+        for (var i = 0; i < array.length; i++)
+            new_array[i] = [i, array[i][0]];
+    } else {
+        for (var i = 0; i < array.length; i++)
+            new_array[i] = [i, array[i]];
+    }
+    return new_array;
+}
+
+function trim(waveform, e) {
+
+    let n1 = 0;
+    let n2 = waveform.length - 1;
+    while (waveform[n1] < e)
+        n1++;
+    while (waveform[n2] < e)
+        n2--;
+    return waveform.slice(n1, n2);
+}
 
 
 function waveformCopy(waveform) {
@@ -139,8 +111,6 @@ function getWaveformFromFile(url) {
     xhr.onload = function (e) {
         context.decodeAudioData(this.response,
             function (decodedArrayBuffer) {
-                console.log(1111111111111111111111111);
-                console.log(decodedArrayBuffer.getChannelData(0).length);
                 deferred.resolve(waveformCopy(decodedArrayBuffer.getChannelData(0)));
             }, function (e) {
                 console.log('Error decoding file', e);

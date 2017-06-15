@@ -5,8 +5,39 @@
     <title></title>
     <script src="./lib/jquery.min.js"></script>
     <script src="./lib/flot/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+
+<div class="tabs">
+    <button id="dict_tab">Словарь</button>
+    <button id="recg_tab">Распознать</button>
+</div>
+<div class="content">
+    <div id="dictionary">
+        <h2>Словарь</h2>
+
+        <div class="form">
+            <h4>Добавить слово</h4>
+
+            <p><label>Слово: <input id="word" type="text" name="word"></label></p>
+
+            <p><input id="file" type="file" name="file"></p>
+            <button id="add">Добавить</button>
+
+        </div>
+        <div id="gr1" style="width:600px;height:300px;"></div>
+    </div>
+    <div id="recognize">
+        <h2>Распознать</h2>
+
+        <div>
+            <input id="file_r" type="file" name="file_r">
+            <button id="rec">Распознать</button>
+        </div>
+    </div>
+</div>
+<!--
 <input id="word" type="text" name="word">
 <input id="file" type="file" name="file">
 <button id="add">Добавить</button>
@@ -24,7 +55,7 @@
 <div id="gr7" style="width:600px;height:300px; padding: 50px;"></div>
 <div id="gr8" style="width:600px;height:300px; padding: 50px;"></div>
 <div id="gr9" style="width:600px;height:300px; padding: 50px;"></div>
-
+-->
 <script src="./index.js"></script>
 </body>
 </html>

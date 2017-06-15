@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+}
+
+.tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.tabs button {
+    border: none;
+    background-color: white;
+    border-bottom: 1px dotted blue;
+
+    color: blue;
+
+    outline: none;
+
+    padding: .2rem .2rem;
+    margin-right: 1rem;
+
+    transition: all 0.1s ease-in-out;
+
+    cursor: pointer;
+}
+
+.tabs button:last-child {
+    margin-right: 0;
+}
+
+.tabs button:hover {
+    color: darkblue;
+    border-bottom: 1px dotted darkblue;
+}
+
+.content {
+    padding: 2rem;
+    border: 1px solid blue;
+    background-color: #efefef;
+    min-width: calc(600px + 2rem);
+}
+
+.content h2 {
+    margin-top: 0;
+}
+
+.form {
+    margin-bottom: 2rem;
+}

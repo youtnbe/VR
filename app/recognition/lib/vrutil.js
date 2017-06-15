@@ -11,8 +11,73 @@ module.exports = {
     isVoice: isVoice,
     hammingWindow: hammingWindow,
     fft: fft,
-    mfcc: mfcc
+    mfcc: mfcc,
+    DTWDistance: DTWDistance,
+    trim: trim
 };
+
+function trim(waveform) {
+    const e = 0.006;
+
+    let n1 = 0;
+    let n2 = waveform.length - 1;
+    while (waveform[n1] < e)
+        n1++;
+    while (waveform[n2] < e)
+        n2--;
+    return waveform.slice(n1, n2);
+}
+
+function DTWDistance(a, b, distance) {
+    let DTW = [];
+    let n = a.length;
+    let m = b.length;
+
+    DTW[0] = [];
+    DTW[0][0] = 0;
+    for (let i = 1; i < n; i++) {
+        DTW[i] = [];
+        DTW[i][0] = distance(a[i], b[0]) + DTW[i - 1][0];
+    }
+
+    for (let i = 1; i < m; i++) {
+        DTW[0][i] = distance(a[0], b[i]) + DTW[0][i - 1];
+    }
+
+
+    for (let i = 1; i < n; i++)
+        for (let j = 1; j < m; j++) {
+            let cost = distance(a[i], b[j]);
+            DTW[i][j] = cost + Math.min(DTW[i - 1][j],    // insertion
+                    DTW[i][j - 1],    // deletion
+                    DTW[i - 1][j - 1]);    // match
+        }
+
+    let i = n - 1, j = m - 1;
+    let w = [];
+    // determinate of warping path
+    w.push(DTW[i][j]);
+    do {
+        if (i > 0 && j > 0)
+            if (DTW[i - 1][j - 1] <= DTW[i - 1][j])
+                if (DTW[i - 1][j - 1] <= DTW[i][j - 1]) {
+                    i--;
+                    j--;
+                }
+                else j--;
+            else if (DTW[i - 1][j] <= DTW[i][j - 1])
+                i--;
+            else
+                j--;
+        else if (i == 0)
+            j--;
+        else i--;
+        w.push(DTW[i][j]);
+    }
+    while (i != 0 || j != 0);
+
+    return DTW[n - 1][m - 1];
+}
 
 function mfcc(frames) {
 
