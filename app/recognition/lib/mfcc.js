@@ -63,8 +63,8 @@ function construct(fftSize, bankCount, lowFrequency, highFrequency, sampleRate) 
         var //powers = powerSpectrum(fft),
             melSpec = filterBank.filter(fft),
             melSpecLog = melSpec.map(log),
-            melCoef = dct(melSpecLog).slice(0, 13),
-            power = melCoef.splice(0, 1);
+            melCoef = dct(melSpecLog).slice(0, 13).map(Math.abs),
+            power = melCoef.slice(0, 1);
 
         return debug ? {
             melSpec: melSpec,

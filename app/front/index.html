@@ -2,38 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>voice recognition</title>
     <script src="./lib/jquery.min.js"></script>
     <script src="./lib/flot/jquery.flot.min.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-
-<div class="tabs">
-    <button id="dict_tab">Словарь</button>
-    <button id="recg_tab">Распознать</button>
-</div>
-<div class="content">
-    <div id="dictionary">
-        <h2>Словарь</h2>
-
-        <div class="form">
-            <h4>Добавить слово</h4>
-
-            <p><label>Слово: <input id="word" type="text" name="word"></label></p>
-
-            <p><input id="file" type="file" name="file"></p>
-            <button id="add">Добавить</button>
-
+<div class="main">
+    <div class="content">
+        <div class="headers">
+            <h1>Информационно вычислительная система для распознавания отдельно произнесенных слов</h1>
         </div>
-        <div id="gr1" style="width:600px;height:300px;"></div>
-    </div>
-    <div id="recognize">
-        <h2>Распознать</h2>
+        <div class="tabs">
+            <button id="dict_tab">Словарь</button>
+            <button id="recg_tab">Распознать</button>
+        </div>
+        <hr>
+        <div id="dictionary">
+            <h2>Словарь</h2>
 
-        <div>
-            <input id="file_r" type="file" name="file_r">
-            <button id="rec">Распознать</button>
+            <div class="form">
+                <h4>Добавить слово</h4>
+
+                <p><label>Слово: <input id="word" type="text" name="word"></label></p>
+
+                <p><input id="file" type="file" name="file"></p>
+                <button id="add">Добавить</button>
+            </div>
+
+            <div class="result">
+                <div class="answer"></div>
+                <div class="graph">
+                    <div id="gr1" style="width:600px;height:300px;"></div>
+                    <span>Входной сигнал</span>
+                </div>
+                <div class="graph">
+                    <div id="gr2" style="width:600px;height:300px;"></div>
+                    <span>Mel-фильтры</span>
+                </div>
+                <div class="graph">
+                    <div id="gr3" style="width:600px;height:300px;"></div>
+                    <span>Мел-частотные кепстральные коэффициенты | Фильтр <span id="filterNumber"></span></span>
+                    <input type="range" id="filter" name="filter" min="1" max="10" step="1">
+                </div>
+            </div>
+        </div>
+        <div id="recognize">
+            <h2>Распознать</h2>
+
+            <div class="form">
+                <input id="file_r" type="file" name="file_r">
+                <button id="rec">Распознать</button>
+            </div>
+
+            <div class="result">
+                <div class="answer"></div>
+                <div class="graph">
+                    <div id="gr4" style="width:600px;height:300px;"></div>
+                    <span>Входной сигнал</span>
+                </div>
+                <div class="graph">
+                    <div id="gr5" style="width:600px;height:300px;"></div>
+                    <span>Мел-частотные кепстральные коэффициенты входного сигнала | Фильтр <span id="filterNumberIn"></span></span>
+                    <input type="range" id="filterIn" name="filter" min="1" max="10" step="1">
+                </div>
+                <div class="graph">
+                    <div id="gr6" style="width:600px;height:300px;"></div>
+                    <span>Мел-частотные кепстральные коэффициенты найденного слова | Фильтр <span id="filterNumberFind"></span></span>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

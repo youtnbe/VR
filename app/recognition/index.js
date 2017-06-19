@@ -1,6 +1,6 @@
 var app = (require('express').Router)();
 var bodyParser = require("body-parser");
-var recognition = require('./lib/vr').construct(256);
+var recognition = require('./lib/vr').construct(128);
 var Word = require('./../models').Word;
 
 app.use(bodyParser.urlencoded({limit: '10mb', extended: false, parameterLimit: 999999}));
@@ -14,9 +14,11 @@ app.post('/service/wordAdd', function (request, response) {
         });
     }
 
+    var res = recognition.mfcc(request.body['waveform[]'], true);
+
     var word = new Word({
         word: request.body['word'],
-        mfcc: recognition.mfcc(request.body['waveform[]'])
+        mfcc: res.mel
     });
 
     word.save((err) => {
@@ -36,7 +38,8 @@ app.post('/service/wordAdd', function (request, response) {
         }
         response.status(200).json({
             success: true,
-            message: 'Слово добавлено в базу!'
+            message: 'Слово "' + request.body['word'] + '" добавлено в словарь!',
+            mfcc: res
         });
     });
 });
@@ -63,7 +66,7 @@ app.post('/service/recognize', function (request, response) {
 
         response.status(200).json({
             success: true,
-            word: recognition.recornize(waveform, words)
+            word: recognition.recornize(waveform, words, true)
         });
     });
 });

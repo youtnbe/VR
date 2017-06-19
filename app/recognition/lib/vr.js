@@ -5,15 +5,15 @@ module.exports = {
         if (!frameWidth) throw Error('Please provide an frame width');
 
         return {
-            mfcc: function (waveform) {
+            mfcc: function (waveform, debug) {
                 var normalizedWaveform = vrUtil.normalizeWaveform(vrUtil.trim(waveform));
                 var frames = vrUtil.getFrames(normalizedWaveform, frameWidth);
-                return vrUtil.mfcc(frames);
+                return vrUtil.mfcc(frames, debug);
             },
             recornize: function (waveform, words, debug) {
 
-                let currentMfcc = this.mfcc(vrUtil.trim(waveform));
-                let minDistance = 100;
+                let currentMfcc = this.mfcc(vrUtil.trim(waveform), true).mel;
+                let minDistance = 1000000;
                 let answer = '';
 
                 let ds = [];
@@ -34,12 +34,13 @@ module.exports = {
 
                     if (d < minDistance) {
                         minDistance = d;
-                        answer = word.word;
+                        answer = word;
                     }
                 });
 
                 return debug ? {
                     min: minDistance,
+                    input: currentMfcc,
                     a: answer,
                     ds: ds
                 } : answer;

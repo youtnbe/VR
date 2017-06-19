@@ -1,6 +1,6 @@
 var fftcopm = require('./fft').fft;
 var complex = require('./complex');
-var mfccc = require('./mfcc').construct(256, 10, 300, 8000, 16000);
+var mfccc = require('./mfcc').construct(128, 10, 300, 8000, 16000);
 var powerSpectrum = require('./mfcc').powerSpectrum;
 
 module.exports = {
@@ -79,9 +79,10 @@ function DTWDistance(a, b, distance) {
     return DTW[n - 1][m - 1];
 }
 
-function mfcc(frames) {
+function mfcc(frames, debug) {
 
     let mel = [];
+    let filters = [];
     let fourier = [];
 
     for (let i = 0; i < frames.length; i++) {
@@ -90,10 +91,16 @@ function mfcc(frames) {
 
         fourier[i] = hammingWindow(fourier[i]);
 
-        mel[i] = mfccc(powerSpectrum(fourier[i]));
+
+        var m = mfccc(powerSpectrum(fourier[i]), true);
+        filters[i] = m.filters;
+        mel[i] = m.melCoef;
 
     }
-    return mel;
+    return debug ? {
+        filters: filters[0].filters,
+        mel: mel
+    } : mel;
 }
 
 function fft(waveform) {
