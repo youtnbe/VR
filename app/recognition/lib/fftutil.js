@@ -1,11 +1,4 @@
-/*===========================================================================*\
- * Fast Fourier Transform Frequency/Magnitude passes
- *
- * (c) Vail Systems. Joshua Jung and Ben Bryan. 2015
- *
- * This code is not designed to be highly optimized but as an educational
- * tool to understand the Fast Fourier Transform.
-\*===========================================================================*/
+
 
 //-------------------------------------------------
 // The following code assumes a complex number is

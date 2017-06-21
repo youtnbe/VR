@@ -1,11 +1,3 @@
-/*===========================================================================*\
- * Experimental implementation of MFCC.
- * (c) Vail Systems. Joshua Jung and Ben Bryan. 2015
- *
- * This code is not designed to be highly optimized but as an educational
- * tool to understand the Mel-scale and its related coefficients used in
- * human speech analysis.
- \*===========================================================================*/
 var dct = require('./dct');
 
 module.exports = {

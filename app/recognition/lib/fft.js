@@ -1,35 +1,8 @@
-/*===========================================================================*\
- * Fast Fourier Transform (Cooley-Tukey Method)
- *
- * (c) Vail Systems. Joshua Jung and Ben Bryan. 2015
- *
- * This code is not designed to be highly optimized but as an educational
- * tool to understand the Fast Fourier Transform.
- \*===========================================================================*/
-
-//------------------------------------------------
-// Note: Some of this code is not optimized and is
-// primarily designed as an educational and testing
-// tool.
-// To get high performace would require transforming
-// the recursive calls into a loop and then loop
-// unrolling. All of this is best accomplished
-// in C or assembly.
-//-------------------------------------------------
-
-//-------------------------------------------------
-// The following code assumes a complex number is
-// an array: [real, imaginary]
-//-------------------------------------------------
 var complex = require('./complex'),
     fftUtil = require('./fftutil'),
     twiddle = require('bit-twiddle');
 
 module.exports = {
-    //-------------------------------------------------
-    // Calculate FFT for vector where vector.length
-    // is assumed to be a power of 2.
-    //-------------------------------------------------
     fft: function fft(vector) {
         var X = [],
             N = vector.length;
@@ -68,12 +41,6 @@ module.exports = {
 
         return X;
     },
-    //-------------------------------------------------
-    // Calculate FFT for vector where vector.length
-    // is assumed to be a power of 2.  This is the in-
-    // place implementation, to avoid the memory
-    // footprint used by recursion.
-    //-------------------------------------------------
     fftInPlace: function (vector) {
         var N = vector.length;
 
